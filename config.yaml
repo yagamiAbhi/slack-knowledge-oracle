@@ -1,6 +1,11 @@
 app:
   environment: "local"
 
+slack:
+  # The IDs of the channels you want to ingest during your batch run
+  target_channels:
+    - "C1234567890" # Replace with your actual Channel ID
+
 models:
   llm:
     provider: "ollama"
@@ -13,8 +18,8 @@ models:
 
 vector_store:
   provider: "chroma"
-  collection_name: "local_knowledge"
-  persist_directory: "./chroma_db"  # It will create this folder to save your data
+  collection_name: "slack_knowledge"
+  persist_directory: "./chroma_db"
 
 ingestion:
   chunk_size: 1000
