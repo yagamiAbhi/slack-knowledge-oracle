@@ -1,0 +1,28 @@
+app:
+  environment: "local"
+
+models:
+  llm:
+    provider: "ollama"
+    model_name: "qwen3:8b-q4_K_M" 
+    temperature: 0.1
+  
+  embedder:
+    provider: "ollama"
+    model_name: "qwen3-embedding:0.6b" 
+
+vector_store:
+  provider: "chroma"
+  collection_name: "local_knowledge"
+  persist_directory: "./chroma_db"  # It will create this folder to save your data
+
+ingestion:
+  chunk_size: 1000
+  chunk_overlap: 200
+
+retrieval:
+  top_k: 5
+
+logging:
+  level: "DEBUG"
+  format: "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
