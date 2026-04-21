@@ -59,6 +59,59 @@ flowchart LR
     iLLM -.->|Resolved to| oLLM
 ```
 
+### End-to-End Sequence
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Operator as User/Operator
+    actor Teammate as Slack User
+    participant Batch as ingest_batch.py
+    participant App as app.py
+    participant CF as ComponentFactory
+    participant Ingest as IngestionService
+    participant Retrieve as RetrievalService
+    participant Generate as GenerationService
+    participant Loader as SlackDocumentLoader
+    participant Embed as OllamaEmbedder
+    participant Store as ChromaVectorStore
+    participant LLM as OllamaLLM
+
+    rect rgb(245, 245, 210)
+    Note over Operator,Store: Phase 1 - Batch Ingestion (ETL)
+    Operator->>Batch: Run python ingest_batch.py
+    Batch->>CF: Read config + get_ingestion_service()
+    CF-->>Batch: IngestionService(loader, embedder, vector_store)
+    loop For each channel in config.yaml
+        Batch->>Ingest: process_source(channel_id)
+        Ingest->>Loader: load(channel_id)
+        Loader-->>Ingest: Slack threads as Document list
+        Ingest->>Embed: embed_documents(documents)
+        Embed-->>Ingest: Documents with embeddings
+        Ingest->>Store: upsert(embedded_docs)
+        Store-->>Ingest: Upsert complete
+    end
+    end
+
+    rect rgb(255, 228, 225)
+    Note over Teammate,LLM: Phase 2 - Retrieval + Generation (Slack Chat)
+    Teammate->>App: @bot question in Slack thread
+    App->>CF: get_retrieval_service() + get_generation_service()
+    CF-->>App: RetrievalService + GenerationService
+    App->>Retrieve: retrieve(user_query)
+    Retrieve->>Embed: embed_text(user_query)
+    Embed-->>Retrieve: Query embedding
+    Retrieve->>Store: search(query_embedding, top_k)
+    Store-->>Retrieve: Matching context docs
+    Retrieve-->>App: context_documents
+    App->>Generate: answer_query(query, context, history)
+    Generate->>LLM: generate(prompt, context, chat_history)
+    LLM-->>Generate: Answer text
+    Generate-->>App: Final response
+    App-->>Teammate: Reply in same Slack thread
+    end
+```
+
 ## Current Features (v1.0.0)
 
 - Slack channel ingestion with thread-aware context stitching.
