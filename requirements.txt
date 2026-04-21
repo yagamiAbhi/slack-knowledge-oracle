@@ -2,3 +2,6 @@ pyyaml
 python-dotenv
 pydantic
 requests
+slack_sdk
+slack_bolt
+chromadb

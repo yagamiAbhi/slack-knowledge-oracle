@@ -38,8 +38,8 @@ class ComponentFactory:
         logger.info("Vector store initialized: %s", vs_config["provider"])
 
     def get_ingestion_service(self) -> IngestionService:
-        # Dynamically get the loader (Assuming "txt" for now, can be read from config later)
-        LoaderClass = ProviderRegistry.get_loader("txt")
+        # Get the slack document loader (hardcoded for now since it's the only one, but this can be made dynamic too)
+        LoaderClass = ProviderRegistry.get_loader("slack")
         logger.debug("Resolved document loader class: %s", LoaderClass.__name__)
         loader = LoaderClass()
         
@@ -50,19 +50,16 @@ class ComponentFactory:
         logger.debug("Resolved embedder class: %s", EmbedderClass.__name__)
         embedder = EmbedderClass(model_name=embedder_config["model_name"])
 
-        chunk_size = self.config["ingestion"].get("chunk_size", 1000)
         logger.debug(
-            "Building IngestionService (loader=%s, embedder=%s, chunk_size=%d)",
+            "Building IngestionService (loader=%s, embedder=%s)",
             LoaderClass.__name__,
             EmbedderClass.__name__,
-            chunk_size,
         )
 
         return IngestionService(
             loader=loader,
             embedder=embedder,
-            vector_store=self._vector_store,
-            chunk_size=chunk_size
+            vector_store=self._vector_store
         )
 
     def get_retrieval_service(self) -> RetrievalService:

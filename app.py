@@ -1,8 +1,11 @@
 import os
 import logging
+from dotenv import load_dotenv
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from factories.component_factory import ComponentFactory
+
+load_dotenv()
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO)
