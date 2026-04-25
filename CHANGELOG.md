@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-04-26
+
+### Enhancements
+- Added direct-message (`message` event with `channel_type == "im"`) support in `app.py` so users can query the bot in 1:1 chat, not only via `app_mention`.
+- Improved DM response behavior in `app.py` with thread-aware replies, greeting/small-talk short-circuit handling, and safer session memory keys for threaded vs top-level DM conversations.
+- Expanded `slack.target_channels` in `config.yaml` with an additional channel ID to ingest more workspace knowledge.
+
 ## [1.0.0] - 2026-04-22
 
 ### Added

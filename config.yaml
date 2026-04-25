@@ -5,6 +5,7 @@ slack:
   # The IDs of the channels you want to ingest during your batch run
   target_channels:
     - "C0ATPGQD295" # Replace with your actual Channel ID
+    - "C0AVDB2TGFN"
 
 models:
   llm:
